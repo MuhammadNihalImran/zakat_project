@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { translations, Language } from "@/lib/i18n/translations";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Message {
   id: string;
@@ -12,7 +12,7 @@ interface Message {
 
 export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [lang, setLang] = useState<Language>("en");
+  const { lang, t: allT } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,37 +22,33 @@ export function ChatbotWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Sync language from document lang attribute
-  useEffect(() => {
-    const updateLang = () => {
-      const docLang = document.documentElement.lang === "ur" ? "ur" : "en";
-      setLang(docLang);
-    };
+  const t = allT.chatbot;
 
-    updateLang();
-    const observer = new MutationObserver(updateLang);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["lang"],
+  // Initialize or update welcome message
+  useEffect(() => {
+    setMessages((prev) => {
+      if (prev.length === 0) {
+        return [
+          {
+            id: "welcome",
+            role: "assistant",
+            content: t.welcomeMessage,
+          },
+        ];
+      }
+      // If user hasn't started a custom chat conversation yet, update the welcome message language
+      if (prev.length === 1 && prev[0].id === "welcome") {
+        return [
+          {
+            id: "welcome",
+            role: "assistant",
+            content: t.welcomeMessage,
+          },
+        ];
+      }
+      return prev;
     });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const t = translations[lang].chatbot;
-
-  // Initialize welcome message
-  useEffect(() => {
-    if (messages.length === 0) {
-      setMessages([
-        {
-          id: "welcome",
-          role: "assistant",
-          content: t.welcomeMessage,
-        },
-      ]);
-    }
-  }, [t.welcomeMessage, messages.length]);
+  }, [t.welcomeMessage]);
 
   // Auto-scroll to bottom of messages
   const scrollToBottom = useCallback(() => {
@@ -188,7 +184,7 @@ export function ChatbotWidget() {
           aria-expanded={false}
           aria-controls="chatbot-dialog"
           aria-label={t.floatingBtn}
-          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-ring"
+          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-ring cursor-pointer"
         >
           <span className="text-xl leading-none" aria-hidden="true">
             💬
@@ -229,7 +225,7 @@ export function ChatbotWidget() {
             <button
               ref={closeBtnRef}
               onClick={() => handleToggleOpen(false)}
-              className="p-1.5 text-slate-300 hover:text-white rounded-lg hover:bg-slate-800 transition-colors focus-ring"
+              className="p-1.5 text-slate-300 hover:text-white rounded-lg hover:bg-slate-800 transition-colors focus-ring cursor-pointer"
               aria-label="Close chat assistant"
             >
               ✕
@@ -263,7 +259,7 @@ export function ChatbotWidget() {
                 {msg.isError && (
                   <button
                     onClick={handleRetry}
-                    className="mt-1.5 text-xs text-rose-600 hover:text-rose-700 underline font-medium flex items-center gap-1 focus-ring rounded"
+                    className="mt-1.5 text-xs text-rose-600 hover:text-rose-700 underline font-medium flex items-center gap-1 focus-ring rounded cursor-pointer"
                   >
                     🔄 {t.retryBtn}
                   </button>
@@ -293,7 +289,7 @@ export function ChatbotWidget() {
                     <button
                       key={idx}
                       onClick={() => handleSend(q)}
-                      className="text-left rtl:text-right text-xs px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200/80 text-emerald-900 transition-colors font-medium focus-ring"
+                      className="text-left rtl:text-right text-xs px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200/80 text-emerald-900 transition-colors font-medium focus-ring cursor-pointer"
                     >
                       💡 {q}
                     </button>
@@ -330,7 +326,7 @@ export function ChatbotWidget() {
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:hover:bg-emerald-600 text-white font-medium text-xs sm:text-sm transition-colors shadow-xs focus-ring"
+                className="px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:hover:bg-emerald-600 disabled:cursor-not-allowed text-white font-medium text-xs sm:text-sm transition-colors shadow-xs focus-ring cursor-pointer"
               >
                 {t.sendBtn}
               </button>

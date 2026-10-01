@@ -1,29 +1,18 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CalculatorProvider } from "@/context/CalculatorContext";
-import { Language, translations } from "@/lib/i18n/translations";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function CalculatorLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [lang, setLang] = useState<Language>("en");
+  const { lang, toggleLanguage, t } = useLanguage();
   const pathname = usePathname();
-
-  const t = translations[lang];
-
-  useEffect(() => {
-    document.documentElement.dir = lang === "ur" ? "rtl" : "ltr";
-    document.documentElement.lang = lang;
-  }, [lang]);
-
-  const toggleLanguage = () => {
-    setLang((prev) => (prev === "en" ? "ur" : "en"));
-  };
 
   // Determine current active step
   const getStepIndex = () => {
@@ -64,7 +53,7 @@ export default function CalculatorLayout({
             <button
               type="button"
               onClick={toggleLanguage}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs sm:text-sm font-medium transition-colors focus-ring"
+              className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs sm:text-sm font-medium transition-colors focus-ring cursor-pointer"
             >
               {t.nav.langSwitch}
             </button>

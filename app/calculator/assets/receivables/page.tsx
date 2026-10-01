@@ -5,32 +5,32 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "@/components/ui";
 import { useCalculator } from "@/context/CalculatorContext";
-import { translations, Language } from "@/lib/i18n/translations";
-import { validateNumericString, getValidationErrorMessage } from "@/lib/validation";
+import { useLanguage } from "@/context/LanguageContext";
+import { validateNumericString, getValidationErrorMessage, ValidationErrorKey } from "@/lib/validation";
 
 export default function ReceivablesFormPage() {
   const router = useRouter();
   const { state, updateReceivables } = useCalculator();
+  const { lang, t: allT } = useLanguage();
 
-  const lang: Language = typeof document !== "undefined" && document.documentElement.lang === "ur" ? "ur" : "en";
-  const t = translations[lang].calculator.forms.receivables;
-  const commonT = translations[lang].calculator.forms;
+  const t = allT.calculator.forms.receivables;
+  const commonT = allT.calculator.forms;
 
   const [expectedRepayments, setExpectedRepayments] = useState(
     state.receivables.expectedRepayments
   );
-  const [errors, setErrors] = useState<{ expectedRepayments?: string }>({});
+  const [errorKey, setErrorKey] = useState<ValidationErrorKey | undefined>(undefined);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
 
     const check = validateNumericString(expectedRepayments);
-    if (!check.isValid) {
-      setErrors({ expectedRepayments: getValidationErrorMessage(check.errorKey, lang) });
+    if (!check.isValid && check.errorKey) {
+      setErrorKey(check.errorKey);
       return;
     }
 
-    setErrors({});
+    setErrorKey(undefined);
     updateReceivables({ expectedRepayments });
     router.push("/calculator/assets");
   };
@@ -46,9 +46,9 @@ export default function ReceivablesFormPage() {
 
       <Card variant="bordered">
         <CardHeader>
-          <CardTitle className="text-lg">📜 Receivables & Money Owed</CardTitle>
+          <CardTitle className="text-lg">📜 {t.title}</CardTitle>
           <CardDescription>
-            Enter good debts or loans you expect to be repaid.
+            {t.subtitle}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -60,10 +60,10 @@ export default function ReceivablesFormPage() {
               type="number"
               min="0"
               value={expectedRepayments}
-              error={errors.expectedRepayments}
+              error={errorKey ? getValidationErrorMessage(errorKey, lang) : undefined}
               onChange={(e) => {
                 setExpectedRepayments(e.target.value);
-                if (errors.expectedRepayments) setErrors({});
+                if (errorKey) setErrorKey(undefined);
               }}
             />
 

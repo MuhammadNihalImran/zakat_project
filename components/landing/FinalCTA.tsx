@@ -19,10 +19,10 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ t, onCalculateClick }) => {
         </p>
         <div className="pt-2 flex justify-center">
           <Button
-            variant="primary"
+            variant="inverted"
             size="lg"
             onClick={onCalculateClick}
-            className="bg-white text-emerald-950 hover:bg-emerald-50 active:bg-emerald-100 font-bold px-8 shadow-lg border-0"
+            className="font-bold px-8 py-3.5 transition-all duration-200 cursor-pointer"
           >
             {t.ctaButton}
           </Button>

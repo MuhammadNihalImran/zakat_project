@@ -13,18 +13,17 @@ import {
   Alert,
 } from "@/components/ui";
 import { useCalculator } from "@/context/CalculatorContext";
-import { translations } from "@/lib/i18n/translations";
+import { useLanguage } from "@/context/LanguageContext";
 import { calculateZakat, DEFAULT_ZAKAT_METHODOLOGY } from "@/lib/zakat";
 
 export default function ResultPage() {
   const router = useRouter();
   const { state, resetCalculator } = useCalculator();
+  const { lang, t: allT } = useLanguage();
 
-  const lang =
-    typeof document !== "undefined" && document.documentElement.lang === "ur"
-      ? "ur"
-      : "en";
-  const t = translations[lang].calculator.result;
+  const t = allT.calculator.result;
+  const assetsT = allT.calculator.assets;
+  const reviewT = allT.calculator.review;
 
   const [metalPrices, setMetalPrices] = useState<{
     goldPricePerGram: number;
@@ -84,7 +83,7 @@ export default function ResultPage() {
       if (!res.ok) {
         const json = await res.json().catch(() => null);
         throw new Error(
-          json?.error || "Failed to generate PDF summary report."
+          json?.error || (lang === "ur" ? "پی ڈی ایف رپورٹ بنانے میں ناکامی ہوئی۔" : "Failed to generate PDF summary report.")
         );
       }
 
@@ -101,7 +100,7 @@ export default function ResultPage() {
       const msg =
         err instanceof Error
           ? err.message
-          : "Failed to download PDF summary report.";
+          : (lang === "ur" ? "پی ڈی ایف رپورٹ ڈاؤن لوڈ کرنے میں خرابی پیش آئی۔" : "Failed to download PDF summary report.");
       setPdfError(msg);
     } finally {
       setPdfLoading(false);
@@ -111,10 +110,10 @@ export default function ResultPage() {
   return (
     <div className="space-y-6 sm:space-y-8 max-w-3xl mx-auto">
       {/* Page Header */}
-      <div className="space-y-1 text-center sm:text-left">
+      <div className="space-y-1 text-center sm:text-left rtl:sm:text-right">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold mb-2">
           {result.methodologyStatus === "DEVELOPMENT_DEFAULTS_PENDING_REVIEW"
-            ? "Development Methodology Assessment"
+            ? (lang === "ur" ? "ترقیاتی طریقۂ کار کے مطابق تخمینہ" : "Development Methodology Assessment")
             : t.statusBadge}
         </div>
         <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
@@ -124,13 +123,13 @@ export default function ResultPage() {
       </div>
 
       {/* Mandatory Disclaimer Alert */}
-      <Alert variant="warning" title="Methodology Notice">
+      <Alert variant="warning" title={lang === "ur" ? "طریقۂ کار سے متعلق نوٹس" : "Methodology Notice"}>
         {result.disclaimer}
       </Alert>
 
       {/* PDF Download Error Alert */}
       {pdfError && (
-        <Alert variant="error" title="PDF Generation Error">
+        <Alert variant="error" title={lang === "ur" ? "پی ڈی ایف رپورٹ کی خرابی" : "PDF Generation Error"}>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <span>{pdfError}</span>
             <Button
@@ -139,7 +138,7 @@ export default function ResultPage() {
               onClick={handleDownloadPdf}
               className="w-fit"
             >
-              🔄 Retry Download
+              🔄 {lang === "ur" ? "دوبارہ ڈاؤن لوڈ کریں" : "Retry Download"}
             </Button>
           </div>
         </Alert>
@@ -150,10 +149,10 @@ export default function ResultPage() {
         variant="bordered"
         className="bg-gradient-to-b from-slate-900 to-slate-950 text-white border-slate-800 shadow-xl"
       >
-        <CardHeader className="text-center sm:text-left border-b border-slate-800 pb-6">
+        <CardHeader className="text-center sm:text-left rtl:sm:text-right border-b border-slate-800 pb-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <CardTitle className="text-slate-300 text-sm font-semibold uppercase tracking-wider">
-              Zakat Payable
+              {lang === "ur" ? "قابلِ ادا زکوٰۃ" : "Zakat Payable"}
             </CardTitle>
             <span
               className={`px-3 py-1 text-xs font-bold rounded-full ${
@@ -162,7 +161,9 @@ export default function ResultPage() {
                   : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
               }`}
             >
-              {result.isEligible ? "Eligible for Zakat" : "Below Nisab Threshold"}
+              {result.isEligible
+                ? (lang === "ur" ? "صاحبِ نصاب / زکوٰۃ واجب ہے" : "Eligible for Zakat")
+                : (lang === "ur" ? "نصاب کی حد سے کم" : "Below Nisab Threshold")}
             </span>
           </div>
 
@@ -171,12 +172,15 @@ export default function ResultPage() {
           </div>
 
           <CardDescription className="text-slate-400 text-xs pt-2">
-            Nisab Standard Used:{" "}
+            {lang === "ur" ? "استعمال شدہ نصاب کا معیار: " : "Nisab Standard Used: "}
             <span className="capitalize text-slate-200 font-semibold">
-              {result.nisabStandardUsed} Nisab ({result.nisabThresholdGrams}g)
+              {result.nisabStandardUsed === "silver"
+                ? (lang === "ur" ? "چاندی کا نصاب" : "Silver Nisab")
+                : (lang === "ur" ? "سونے کا نصاب" : "Gold Nisab")}{" "}
+              ({result.nisabThresholdGrams}g)
             </span>{" "}
             {result.nisabValue > 0 && (
-              <span>— Threshold: PKR {result.nisabValue.toLocaleString()}</span>
+              <span>— {lang === "ur" ? "حدِ نصاب:" : "Threshold:"} PKR {result.nisabValue.toLocaleString()}</span>
             )}
           </CardDescription>
         </CardHeader>
@@ -188,28 +192,28 @@ export default function ResultPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
             <div className="p-3 rounded-lg bg-slate-800/80 border border-slate-700 flex justify-between">
-              <span className="text-slate-400">Total Gross Assets</span>
+              <span className="text-slate-400">{reviewT.totalAssetsLabel}</span>
               <span className="font-mono font-bold text-white">
                 PKR {result.totalAssets.toLocaleString()}
               </span>
             </div>
 
             <div className="p-3 rounded-lg bg-slate-800/80 border border-slate-700 flex justify-between">
-              <span className="text-slate-400">Deductible Liabilities</span>
+              <span className="text-slate-400">{reviewT.totalLiabilitiesLabel}</span>
               <span className="font-mono font-bold text-amber-400">
                 - PKR {result.allowedLiabilities.toLocaleString()}
               </span>
             </div>
 
             <div className="p-3 rounded-lg bg-slate-800/80 border border-slate-700 flex justify-between">
-              <span className="text-slate-400">Net Zakatable Wealth</span>
+              <span className="text-slate-400">{reviewT.netZakatableLabel}</span>
               <span className="font-mono font-bold text-emerald-400">
                 PKR {result.netZakatableWealth.toLocaleString()}
               </span>
             </div>
 
             <div className="p-3 rounded-lg bg-slate-800/80 border border-slate-700 flex justify-between">
-              <span className="text-slate-400">Zakat Rate Applied</span>
+              <span className="text-slate-400">{lang === "ur" ? "شرحِ زکوٰۃ" : "Zakat Rate Applied"}</span>
               <span className="font-mono font-bold text-white">
                 {result.zakatRatePercentage}%
               </span>
@@ -221,41 +225,41 @@ export default function ResultPage() {
       {/* Itemized Asset Category Breakdown Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Entered Asset Breakdown</CardTitle>
+          <CardTitle className="text-base">{lang === "ur" ? "درج کردہ اثاثوں کی تفصیل" : "Entered Asset Breakdown"}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-xs sm:text-sm">
           <div className="flex justify-between py-1 border-b border-slate-100">
-            <span className="text-slate-600">Cash & Savings</span>
+            <span className="text-slate-600">{assetsT.categories.cashSavings.name}</span>
             <span className="font-mono font-semibold">
               PKR {result.categoryBreakdown.cashSavings.toLocaleString()}
             </span>
           </div>
           <div className="flex justify-between py-1 border-b border-slate-100">
-            <span className="text-slate-600">Gold Holdings</span>
+            <span className="text-slate-600">{assetsT.categories.gold.name}</span>
             <span className="font-mono font-semibold">
               PKR {result.categoryBreakdown.gold.toLocaleString()}
             </span>
           </div>
           <div className="flex justify-between py-1 border-b border-slate-100">
-            <span className="text-slate-600">Silver Holdings</span>
+            <span className="text-slate-600">{assetsT.categories.silver.name}</span>
             <span className="font-mono font-semibold">
               PKR {result.categoryBreakdown.silver.toLocaleString()}
             </span>
           </div>
           <div className="flex justify-between py-1 border-b border-slate-100">
-            <span className="text-slate-600">Investments</span>
+            <span className="text-slate-600">{assetsT.categories.investments.name}</span>
             <span className="font-mono font-semibold">
               PKR {result.categoryBreakdown.investments.toLocaleString()}
             </span>
           </div>
           <div className="flex justify-between py-1 border-b border-slate-100">
-            <span className="text-slate-600">Business Assets</span>
+            <span className="text-slate-600">{assetsT.categories.businessAssets.name}</span>
             <span className="font-mono font-semibold">
               PKR {result.categoryBreakdown.businessAssets.toLocaleString()}
             </span>
           </div>
           <div className="flex justify-between py-1">
-            <span className="text-slate-600">Receivables</span>
+            <span className="text-slate-600">{assetsT.categories.receivables.name}</span>
             <span className="font-mono font-semibold">
               PKR {result.categoryBreakdown.receivables.toLocaleString()}
             </span>
@@ -267,7 +271,7 @@ export default function ResultPage() {
       <Card variant="default" className="bg-slate-50 border-slate-200">
         <CardHeader className="pb-2">
           <CardTitle className="text-xs uppercase tracking-wider text-slate-500 font-bold">
-            Methodology & Scope Metadata
+            {lang === "ur" ? "طریقۂ کار اور اہم نکات" : "Methodology & Scope Metadata"}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-1 text-xs text-slate-600">
@@ -289,13 +293,15 @@ export default function ResultPage() {
           disabled={pdfLoading}
           className="w-full sm:w-auto font-semibold"
         >
-          {pdfLoading ? "⏳ Generating PDF..." : "📄 Download PDF Summary"}
+          {pdfLoading
+            ? (lang === "ur" ? "⏳ رپورٹ تیار کی جا رہی ہے..." : "⏳ Generating PDF...")
+            : (lang === "ur" ? "📄 پی ڈی ایف رپورٹ ڈاؤن لوڈ کریں" : "📄 Download PDF Summary")}
         </Button>
 
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Link href="/" className="w-full sm:w-auto">
             <Button variant="ghost" size="md" className="w-full">
-              Back to Home
+              {lang === "ur" ? "ہوم پیج پر واپس" : "Back to Home"}
             </Button>
           </Link>
           <Button

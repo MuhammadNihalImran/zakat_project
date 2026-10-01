@@ -5,21 +5,21 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "@/components/ui";
 import { useCalculator } from "@/context/CalculatorContext";
-import { translations, Language } from "@/lib/i18n/translations";
-import { validateNumericString, getValidationErrorMessage } from "@/lib/validation";
+import { useLanguage } from "@/context/LanguageContext";
+import { validateNumericString, getValidationErrorMessage, ValidationErrorKey } from "@/lib/validation";
 
 export default function BusinessAssetsFormPage() {
   const router = useRouter();
   const { state, updateBusinessAssets } = useCalculator();
+  const { lang, t: allT } = useLanguage();
 
-  const lang: Language = typeof document !== "undefined" && document.documentElement.lang === "ur" ? "ur" : "en";
-  const t = translations[lang].calculator.forms.businessAssets;
-  const commonT = translations[lang].calculator.forms;
+  const t = allT.calculator.forms.businessAssets;
+  const commonT = allT.calculator.forms;
 
   const [tradeStock, setTradeStock] = useState(state.businessAssets.tradeStock);
   const [cashReserves, setCashReserves] = useState(state.businessAssets.cashReserves);
 
-  const [errors, setErrors] = useState<{ tradeStock?: string; cashReserves?: string }>({});
+  const [errorKeys, setErrorKeys] = useState<{ tradeStock?: ValidationErrorKey; cashReserves?: ValidationErrorKey }>({});
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,16 +27,16 @@ export default function BusinessAssetsFormPage() {
     const check1 = validateNumericString(tradeStock);
     const check2 = validateNumericString(cashReserves);
 
-    const newErrors: { tradeStock?: string; cashReserves?: string } = {};
+    const newErrors: { tradeStock?: ValidationErrorKey; cashReserves?: ValidationErrorKey } = {};
 
-    if (!check1.isValid) {
-      newErrors.tradeStock = getValidationErrorMessage(check1.errorKey, lang);
+    if (!check1.isValid && check1.errorKey) {
+      newErrors.tradeStock = check1.errorKey;
     }
-    if (!check2.isValid) {
-      newErrors.cashReserves = getValidationErrorMessage(check2.errorKey, lang);
+    if (!check2.isValid && check2.errorKey) {
+      newErrors.cashReserves = check2.errorKey;
     }
 
-    setErrors(newErrors);
+    setErrorKeys(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
       return;
@@ -57,9 +57,9 @@ export default function BusinessAssetsFormPage() {
 
       <Card variant="bordered">
         <CardHeader>
-          <CardTitle className="text-lg">🏬 Business Wealth & Stock</CardTitle>
+          <CardTitle className="text-lg">🏬 {t.title}</CardTitle>
           <CardDescription>
-            Enter commercial trade inventory for sale and business liquid capital.
+            {t.subtitle}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -71,10 +71,10 @@ export default function BusinessAssetsFormPage() {
               type="number"
               min="0"
               value={tradeStock}
-              error={errors.tradeStock}
+              error={errorKeys.tradeStock ? getValidationErrorMessage(errorKeys.tradeStock, lang) : undefined}
               onChange={(e) => {
                 setTradeStock(e.target.value);
-                if (errors.tradeStock) setErrors((prev) => ({ ...prev, tradeStock: undefined }));
+                if (errorKeys.tradeStock) setErrorKeys((prev) => ({ ...prev, tradeStock: undefined }));
               }}
             />
 
@@ -85,10 +85,10 @@ export default function BusinessAssetsFormPage() {
               type="number"
               min="0"
               value={cashReserves}
-              error={errors.cashReserves}
+              error={errorKeys.cashReserves ? getValidationErrorMessage(errorKeys.cashReserves, lang) : undefined}
               onChange={(e) => {
                 setCashReserves(e.target.value);
-                if (errors.cashReserves) setErrors((prev) => ({ ...prev, cashReserves: undefined }));
+                if (errorKeys.cashReserves) setErrorKeys((prev) => ({ ...prev, cashReserves: undefined }));
               }}
             />
 

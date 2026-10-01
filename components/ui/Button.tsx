@@ -2,7 +2,7 @@ import React from "react";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "inverted";
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
   fullWidth?: boolean;
@@ -26,7 +26,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      "inline-flex items-center justify-center font-medium rounded-lg transition-colors duration-150 ease-in-out focus-ring disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none select-none";
+      "inline-flex items-center justify-center font-medium rounded-lg transition-colors duration-150 ease-in-out focus-ring cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none select-none";
 
     const variantStyles = {
       primary:
@@ -39,6 +39,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         "bg-transparent text-slate-700 hover:bg-slate-100 active:bg-slate-200",
       danger:
         "bg-rose-600 text-white hover:bg-rose-700 active:bg-rose-800 shadow-sm",
+      inverted:
+        "bg-white text-emerald-700 border border-emerald-200 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 active:bg-emerald-700 shadow-md hover:shadow-xl",
     };
 
     const sizeStyles = {

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "tsx lib/zakat/engine.test.ts && tsx lib/zakat/nisab.test.ts && tsx lib/zakat/valuation.test.ts && tsx lib/validation.test.ts && tsx lib/i18n/language.test.ts && tsx lib/accessibility.test.ts && tsx lib/api/gemini.test.ts && tsx lib/api/metals.test.ts && tsx lib/pdf/generator.test.ts"
   },
   "dependencies": {
     "@types/pdfkit": "^0.17.6",
@@ -23,6 +24,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
+    "tsx": "^4.19.3",
     "typescript": "^5"
   }
 }

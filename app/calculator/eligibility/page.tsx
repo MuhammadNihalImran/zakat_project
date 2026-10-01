@@ -5,16 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Alert } from "@/components/ui";
 import { useCalculator } from "@/context/CalculatorContext";
-import { translations } from "@/lib/i18n/translations";
+import { useLanguage } from "@/context/LanguageContext";
 import { MetalPricesResponse } from "@/lib/api/metals";
 
 export default function EligibilityPage() {
   const router = useRouter();
   const { state, setNisabStandard } = useCalculator();
-
-  // Get current language from document lang
-  const lang = typeof document !== "undefined" && document.documentElement.lang === "ur" ? "ur" : "en";
-  const t = translations[lang].calculator.eligibility;
+  const { lang, t: allT } = useLanguage();
+  const t = allT.calculator.eligibility;
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,18 +65,18 @@ export default function EligibilityPage() {
       </div>
 
       {/* Explanation Banner */}
-      <Alert variant="info" title="What is Nisab?">
+      <Alert variant="info" title={lang === "ur" ? "نصاب کیا ہے؟" : "What is Nisab?"}>
         {t.nisabExplanation}
       </Alert>
 
       {/* Methodology Confirmation Warning */}
-      <Alert variant="warning" title="Methodology Notice">
+      <Alert variant="warning" title={lang === "ur" ? "طریقۂ کار سے متعلق نوٹس" : "Methodology Notice"}>
         {t.methodologyNotice}
       </Alert>
 
       {/* API Failure Alert */}
       {error && (
-        <Alert variant="error" title="Price Feed Notice">
+        <Alert variant="error" title={lang === "ur" ? "قیمتوں کا فیڈ نوٹس" : "Price Feed Notice"}>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <span>{error}</span>
             <Button variant="outline" size="sm" onClick={fetchPrices} className="w-fit">

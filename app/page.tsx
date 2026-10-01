@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
-import { Language, translations } from "@/lib/i18n/translations";
+import { useLanguage } from "@/context/LanguageContext";
 import {
   Header,
   Hero,
@@ -19,19 +19,7 @@ import {
 
 export default function Home() {
   const router = useRouter();
-  const [lang, setLang] = useState<Language>("en");
-
-  const t = translations[lang];
-
-  useEffect(() => {
-    // Update document element dir attribute dynamically for RTL / LTR layout
-    document.documentElement.dir = lang === "ur" ? "rtl" : "ltr";
-    document.documentElement.lang = lang;
-  }, [lang]);
-
-  const toggleLanguage = () => {
-    setLang((prev) => (prev === "en" ? "ur" : "en"));
-  };
+  const { lang, toggleLanguage, t } = useLanguage();
 
   const handleCalculateClick = () => {
     router.push("/calculator/eligibility");
@@ -77,7 +65,7 @@ export default function Home() {
       </main>
 
       {/* 11. Footer */}
-      <Footer t={t.footer} />
+      <Footer t={t.footer} navT={t.nav} lang={lang} />
     </div>
   );
 }

@@ -5,15 +5,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input, Alert } from "@/components/ui";
 import { useCalculator } from "@/context/CalculatorContext";
-import { translations, Language } from "@/lib/i18n/translations";
-import { validateNumericString, getValidationErrorMessage } from "@/lib/validation";
+import { useLanguage } from "@/context/LanguageContext";
+import { validateNumericString, getValidationErrorMessage, ValidationErrorKey } from "@/lib/validation";
 
 export default function LiabilitiesPage() {
   const router = useRouter();
   const { state, updateLiabilities, getLiabilitiesTotal } = useCalculator();
+  const { lang, t: allT } = useLanguage();
 
-  const lang: Language = typeof document !== "undefined" && document.documentElement.lang === "ur" ? "ur" : "en";
-  const t = translations[lang].calculator.liabilities;
+  const t = allT.calculator.liabilities;
 
   const [shortTermDebts, setShortTermDebts] = useState(
     state.liabilities.shortTermDebts
@@ -21,7 +21,7 @@ export default function LiabilitiesPage() {
   const [immediateExpenses, setImmediateExpenses] = useState(
     state.liabilities.immediateExpenses
   );
-  const [errors, setErrors] = useState<{ shortTermDebts?: string; immediateExpenses?: string }>({});
+  const [errorKeys, setErrorKeys] = useState<{ shortTermDebts?: ValidationErrorKey; immediateExpenses?: ValidationErrorKey }>({});
 
   const liabilitiesTotal = getLiabilitiesTotal();
 
@@ -31,16 +31,16 @@ export default function LiabilitiesPage() {
     const check1 = validateNumericString(shortTermDebts);
     const check2 = validateNumericString(immediateExpenses);
 
-    const newErrors: { shortTermDebts?: string; immediateExpenses?: string } = {};
+    const newErrors: { shortTermDebts?: ValidationErrorKey; immediateExpenses?: ValidationErrorKey } = {};
 
-    if (!check1.isValid) {
-      newErrors.shortTermDebts = getValidationErrorMessage(check1.errorKey, lang);
+    if (!check1.isValid && check1.errorKey) {
+      newErrors.shortTermDebts = check1.errorKey;
     }
-    if (!check2.isValid) {
-      newErrors.immediateExpenses = getValidationErrorMessage(check2.errorKey, lang);
+    if (!check2.isValid && check2.errorKey) {
+      newErrors.immediateExpenses = check2.errorKey;
     }
 
-    setErrors(newErrors);
+    setErrorKeys(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
       return;
@@ -73,16 +73,16 @@ export default function LiabilitiesPage() {
       </div>
 
       {/* Methodology Confirmation Notice */}
-      <Alert variant="warning" title="Methodology Notice">
+      <Alert variant="warning" title={lang === "ur" ? "طریقۂ کار سے متعلق نوٹس" : "Methodology Notice"}>
         {t.methodologyNotice}
       </Alert>
 
       {/* Form Card */}
       <Card variant="bordered">
         <CardHeader>
-          <CardTitle className="text-lg">📉 Deductible Liabilities & Debts</CardTitle>
+          <CardTitle className="text-lg">📉 {t.title}</CardTitle>
           <CardDescription>
-            Enter eligible immediate debts due within the year.
+            {t.subtitle}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -94,12 +94,12 @@ export default function LiabilitiesPage() {
               type="number"
               min="0"
               value={shortTermDebts}
-              error={errors.shortTermDebts}
+              error={errorKeys.shortTermDebts ? getValidationErrorMessage(errorKeys.shortTermDebts, lang) : undefined}
               onChange={(e) => {
                 const val = e.target.value;
                 setShortTermDebts(val);
                 updateLiabilities({ shortTermDebts: val });
-                if (errors.shortTermDebts) setErrors((prev) => ({ ...prev, shortTermDebts: undefined }));
+                if (errorKeys.shortTermDebts) setErrorKeys((prev) => ({ ...prev, shortTermDebts: undefined }));
               }}
             />
 
@@ -110,12 +110,12 @@ export default function LiabilitiesPage() {
               type="number"
               min="0"
               value={immediateExpenses}
-              error={errors.immediateExpenses}
+              error={errorKeys.immediateExpenses ? getValidationErrorMessage(errorKeys.immediateExpenses, lang) : undefined}
               onChange={(e) => {
                 const val = e.target.value;
                 setImmediateExpenses(val);
                 updateLiabilities({ immediateExpenses: val });
-                if (errors.immediateExpenses) setErrors((prev) => ({ ...prev, immediateExpenses: undefined }));
+                if (errorKeys.immediateExpenses) setErrorKeys((prev) => ({ ...prev, immediateExpenses: undefined }));
               }}
             />
 

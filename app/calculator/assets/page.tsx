@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card, CardHeader, CardTitle, CardDescription } from "@/components/ui";
 import { useCalculator } from "@/context/CalculatorContext";
-import { translations } from "@/lib/i18n/translations";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function AssetsPage() {
   const router = useRouter();
@@ -19,8 +19,8 @@ export default function AssetsPage() {
     getTotalAssets,
   } = useCalculator();
 
-  const lang = typeof document !== "undefined" && document.documentElement.lang === "ur" ? "ur" : "en";
-  const t = translations[lang].calculator.assets;
+  const { lang, t: allT } = useLanguage();
+  const t = allT.calculator.assets;
 
   const totalAssets = getTotalAssets();
 
@@ -131,7 +131,7 @@ export default function AssetsPage() {
                 </div>
 
                 <div className="pt-3 text-xs font-semibold text-emerald-600 group-hover:text-emerald-700 flex items-center justify-end gap-1">
-                  <span>Enter Details</span>
+                  <span>{lang === "ur" ? "تفصیلات درج کریں" : "Enter Details"}</span>
                   <span>→</span>
                 </div>
               </CardHeader>
@@ -144,7 +144,7 @@ export default function AssetsPage() {
       <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 pt-6 border-t border-slate-200">
         <Link href="/calculator/eligibility" className="w-full sm:w-auto">
           <Button variant="outline" size="md" className="w-full">
-            ← Back to Eligibility
+            ← {lang === "ur" ? "اہلیت کے صفحہ پر واپس" : "Back to Eligibility"}
           </Button>
         </Link>
         <Button

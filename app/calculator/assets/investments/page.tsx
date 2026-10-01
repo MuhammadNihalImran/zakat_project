@@ -5,22 +5,22 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "@/components/ui";
 import { useCalculator } from "@/context/CalculatorContext";
-import { translations, Language } from "@/lib/i18n/translations";
-import { validateNumericString, getValidationErrorMessage } from "@/lib/validation";
+import { useLanguage } from "@/context/LanguageContext";
+import { validateNumericString, getValidationErrorMessage, ValidationErrorKey } from "@/lib/validation";
 
 export default function InvestmentsFormPage() {
   const router = useRouter();
   const { state, updateInvestments } = useCalculator();
+  const { lang, t: allT } = useLanguage();
 
-  const lang: Language = typeof document !== "undefined" && document.documentElement.lang === "ur" ? "ur" : "en";
-  const t = translations[lang].calculator.forms.investments;
-  const commonT = translations[lang].calculator.forms;
+  const t = allT.calculator.forms.investments;
+  const commonT = allT.calculator.forms;
 
   const [stocks, setStocks] = useState(state.investments.stocks);
   const [mutualFunds, setMutualFunds] = useState(state.investments.mutualFunds);
   const [otherInvestments, setOtherInvestments] = useState(state.investments.otherInvestments);
 
-  const [errors, setErrors] = useState<{ stocks?: string; mutualFunds?: string; otherInvestments?: string }>({});
+  const [errorKeys, setErrorKeys] = useState<{ stocks?: ValidationErrorKey; mutualFunds?: ValidationErrorKey; otherInvestments?: ValidationErrorKey }>({});
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,19 +29,19 @@ export default function InvestmentsFormPage() {
     const check2 = validateNumericString(mutualFunds);
     const check3 = validateNumericString(otherInvestments);
 
-    const newErrors: { stocks?: string; mutualFunds?: string; otherInvestments?: string } = {};
+    const newErrors: { stocks?: ValidationErrorKey; mutualFunds?: ValidationErrorKey; otherInvestments?: ValidationErrorKey } = {};
 
-    if (!check1.isValid) {
-      newErrors.stocks = getValidationErrorMessage(check1.errorKey, lang);
+    if (!check1.isValid && check1.errorKey) {
+      newErrors.stocks = check1.errorKey;
     }
-    if (!check2.isValid) {
-      newErrors.mutualFunds = getValidationErrorMessage(check2.errorKey, lang);
+    if (!check2.isValid && check2.errorKey) {
+      newErrors.mutualFunds = check2.errorKey;
     }
-    if (!check3.isValid) {
-      newErrors.otherInvestments = getValidationErrorMessage(check3.errorKey, lang);
+    if (!check3.isValid && check3.errorKey) {
+      newErrors.otherInvestments = check3.errorKey;
     }
 
-    setErrors(newErrors);
+    setErrorKeys(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
       return;
@@ -62,9 +62,9 @@ export default function InvestmentsFormPage() {
 
       <Card variant="bordered">
         <CardHeader>
-          <CardTitle className="text-lg">📈 Investment Assets</CardTitle>
+          <CardTitle className="text-lg">📈 {t.title}</CardTitle>
           <CardDescription>
-            Enter marketable stocks, shares, mutual funds, and dividend wealth.
+            {t.subtitle}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -76,10 +76,10 @@ export default function InvestmentsFormPage() {
               type="number"
               min="0"
               value={stocks}
-              error={errors.stocks}
+              error={errorKeys.stocks ? getValidationErrorMessage(errorKeys.stocks, lang) : undefined}
               onChange={(e) => {
                 setStocks(e.target.value);
-                if (errors.stocks) setErrors((prev) => ({ ...prev, stocks: undefined }));
+                if (errorKeys.stocks) setErrorKeys((prev) => ({ ...prev, stocks: undefined }));
               }}
             />
 
@@ -90,10 +90,10 @@ export default function InvestmentsFormPage() {
               type="number"
               min="0"
               value={mutualFunds}
-              error={errors.mutualFunds}
+              error={errorKeys.mutualFunds ? getValidationErrorMessage(errorKeys.mutualFunds, lang) : undefined}
               onChange={(e) => {
                 setMutualFunds(e.target.value);
-                if (errors.mutualFunds) setErrors((prev) => ({ ...prev, mutualFunds: undefined }));
+                if (errorKeys.mutualFunds) setErrorKeys((prev) => ({ ...prev, mutualFunds: undefined }));
               }}
             />
 
@@ -104,10 +104,10 @@ export default function InvestmentsFormPage() {
               type="number"
               min="0"
               value={otherInvestments}
-              error={errors.otherInvestments}
+              error={errorKeys.otherInvestments ? getValidationErrorMessage(errorKeys.otherInvestments, lang) : undefined}
               onChange={(e) => {
                 setOtherInvestments(e.target.value);
-                if (errors.otherInvestments) setErrors((prev) => ({ ...prev, otherInvestments: undefined }));
+                if (errorKeys.otherInvestments) setErrorKeys((prev) => ({ ...prev, otherInvestments: undefined }));
               }}
             />
 

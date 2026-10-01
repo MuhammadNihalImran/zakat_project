@@ -5,22 +5,22 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input, Alert } from "@/components/ui";
 import { useCalculator } from "@/context/CalculatorContext";
-import { translations, Language } from "@/lib/i18n/translations";
-import { validateNumericString, getValidationErrorMessage } from "@/lib/validation";
+import { useLanguage } from "@/context/LanguageContext";
+import { validateNumericString, getValidationErrorMessage, ValidationErrorKey } from "@/lib/validation";
 
 export default function GoldFormPage() {
   const router = useRouter();
   const { state, updateGold } = useCalculator();
+  const { lang, t: allT } = useLanguage();
 
-  const lang: Language = typeof document !== "undefined" && document.documentElement.lang === "ur" ? "ur" : "en";
-  const t = translations[lang].calculator.forms.gold;
-  const commonT = translations[lang].calculator.forms;
+  const t = allT.calculator.forms.gold;
+  const commonT = allT.calculator.forms;
 
   const [weightGrams, setWeightGrams] = useState(state.gold.weightGrams);
   const [purityCarat, setPurityCarat] = useState(state.gold.purityCarat);
   const [estimatedValue, setEstimatedValue] = useState(state.gold.estimatedValue);
 
-  const [errors, setErrors] = useState<{ weightGrams?: string; estimatedValue?: string }>({});
+  const [errorKeys, setErrorKeys] = useState<{ weightGrams?: ValidationErrorKey; estimatedValue?: ValidationErrorKey }>({});
 
   const [goldPrice, setGoldPrice] = useState<{ price: number; currency: string; unit: string } | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -50,22 +50,30 @@ export default function GoldFormPage() {
     const check1 = validateNumericString(weightGrams);
     const check2 = validateNumericString(estimatedValue);
 
-    const newErrors: { weightGrams?: string; estimatedValue?: string } = {};
+    const newErrors: { weightGrams?: ValidationErrorKey; estimatedValue?: ValidationErrorKey } = {};
 
-    if (!check1.isValid) {
-      newErrors.weightGrams = getValidationErrorMessage(check1.errorKey, lang);
+    if (!check1.isValid && check1.errorKey) {
+      newErrors.weightGrams = check1.errorKey;
     }
-    if (!check2.isValid) {
-      newErrors.estimatedValue = getValidationErrorMessage(check2.errorKey, lang);
+    if (!check2.isValid && check2.errorKey) {
+      newErrors.estimatedValue = check2.errorKey;
     }
 
-    setErrors(newErrors);
+    setErrorKeys(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
       return;
     }
 
-    updateGold({ weightGrams, purityCarat, estimatedValue });
+    let finalEstValue = estimatedValue;
+    const numericWeight = parseFloat(weightGrams);
+    if ((!finalEstValue || parseFloat(finalEstValue) === 0) && !isNaN(numericWeight) && numericWeight > 0 && goldPrice) {
+      const caratVal = parseFloat(purityCarat) || 24;
+      const purityRatio = caratVal > 0 ? caratVal / 24 : 1;
+      finalEstValue = Math.round(numericWeight * purityRatio * goldPrice.price).toString();
+    }
+
+    updateGold({ weightGrams, purityCarat, estimatedValue: finalEstValue });
     router.push("/calculator/assets");
   };
 
@@ -78,22 +86,22 @@ export default function GoldFormPage() {
         <p className="text-slate-600 text-sm sm:text-base">{t.subtitle}</p>
       </div>
 
-      <Alert variant="warning" title="Methodology Notice">
+      <Alert variant="warning" title={lang === "ur" ? "طریقۂ کار سے متعلق نوٹس" : "Methodology Notice"}>
         {t.methodologyNotice}
       </Alert>
 
       <Card variant="bordered">
         <CardHeader>
-          <CardTitle className="text-lg">🥇 Gold Holdings</CardTitle>
+          <CardTitle className="text-lg">🥇 {t.title}</CardTitle>
           <CardDescription>
-            Enter total gold weight and estimated value.
+            {t.subtitle}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSave} className="space-y-4">
             <div className="p-3 rounded-lg bg-amber-50/80 border border-amber-200 text-xs text-amber-900 font-medium">
               {loading ? (
-                <span className="animate-pulse">⏳ Fetching live market price...</span>
+                <span className="animate-pulse">⏳ {lang === "ur" ? "مارکیٹ ریٹ حاصل کیا جا رہا ہے..." : "Fetching live market price..."}</span>
               ) : goldPrice ? (
                 <span>
                   📊 {t.liveRateLabel || "Live Market Rate"}: <strong>{goldPrice.currency} {goldPrice.price.toLocaleString(lang === "ur" ? "ur-PK" : "en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {goldPrice.unit}</strong>
@@ -106,15 +114,15 @@ export default function GoldFormPage() {
             <Input
               label={t.weightLabel}
               placeholder="e.g. 50"
-              unit="grams"
+              unit={lang === "ur" ? "گرام" : "grams"}
               type="number"
               min="0"
               step="any"
               value={weightGrams}
-              error={errors.weightGrams}
+              error={errorKeys.weightGrams ? getValidationErrorMessage(errorKeys.weightGrams, lang) : undefined}
               onChange={(e) => {
                 setWeightGrams(e.target.value);
-                if (errors.weightGrams) setErrors((prev) => ({ ...prev, weightGrams: undefined }));
+                if (errorKeys.weightGrams) setErrorKeys((prev) => ({ ...prev, weightGrams: undefined }));
               }}
             />
 
@@ -125,10 +133,10 @@ export default function GoldFormPage() {
                 onChange={(e) => setPurityCarat(e.target.value)}
                 className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus-ring"
               >
-                <option value="24">24 Carat (Pure Gold)</option>
-                <option value="22">22 Carat (Standard Jewelry)</option>
-                <option value="21">21 Carat</option>
-                <option value="18">18 Carat</option>
+                <option value="24">{lang === "ur" ? "24 قیراط (خالص سونا)" : "24 Carat (Pure Gold)"}</option>
+                <option value="22">{lang === "ur" ? "22 قیراط (معیاری زیورات)" : "22 Carat (Standard Jewelry)"}</option>
+                <option value="21">{lang === "ur" ? "21 قیراط" : "21 Carat"}</option>
+                <option value="18">{lang === "ur" ? "18 قیراط" : "18 Carat"}</option>
               </select>
             </div>
 
@@ -139,10 +147,10 @@ export default function GoldFormPage() {
               type="number"
               min="0"
               value={estimatedValue}
-              error={errors.estimatedValue}
+              error={errorKeys.estimatedValue ? getValidationErrorMessage(errorKeys.estimatedValue, lang) : undefined}
               onChange={(e) => {
                 setEstimatedValue(e.target.value);
-                if (errors.estimatedValue) setErrors((prev) => ({ ...prev, estimatedValue: undefined }));
+                if (errorKeys.estimatedValue) setErrorKeys((prev) => ({ ...prev, estimatedValue: undefined }));
               }}
             />
 

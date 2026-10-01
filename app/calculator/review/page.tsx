@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Alert } from "@/components/ui";
 import { useCalculator } from "@/context/CalculatorContext";
-import { translations, Language } from "@/lib/i18n/translations";
+import { useLanguage } from "@/context/LanguageContext";
 import { validateCalculatorState } from "@/lib/validation";
 
 export default function ReviewPage() {
@@ -22,9 +22,10 @@ export default function ReviewPage() {
     getLiabilitiesTotal,
   } = useCalculator();
 
-  const lang: Language = typeof document !== "undefined" && document.documentElement.lang === "ur" ? "ur" : "en";
-  const t = translations[lang].calculator.review;
-  const valT = translations[lang].validation;
+  const { lang, t: allT } = useLanguage();
+  const t = allT.calculator.review;
+  const assetsT = allT.calculator.assets;
+  const valT = allT.validation;
 
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -34,32 +35,32 @@ export default function ReviewPage() {
 
   const assetCategories = [
     {
-      name: "Cash & Savings",
+      name: assetsT.categories.cashSavings.name,
       value: getCashSavingsTotal(),
       path: "/calculator/assets/cash-savings",
     },
     {
-      name: "Gold Holdings",
+      name: assetsT.categories.gold.name,
       value: getGoldTotal(),
       path: "/calculator/assets/gold",
     },
     {
-      name: "Silver Holdings",
+      name: assetsT.categories.silver.name,
       value: getSilverTotal(),
       path: "/calculator/assets/silver",
     },
     {
-      name: "Investments",
+      name: assetsT.categories.investments.name,
       value: getInvestmentsTotal(),
       path: "/calculator/assets/investments",
     },
     {
-      name: "Business Assets",
+      name: assetsT.categories.businessAssets.name,
       value: getBusinessAssetsTotal(),
       path: "/calculator/assets/business-assets",
     },
     {
-      name: "Receivables",
+      name: assetsT.categories.receivables.name,
       value: getReceivablesTotal(),
       path: "/calculator/assets/receivables",
     },
@@ -88,24 +89,30 @@ export default function ReviewPage() {
 
       {/* Validation Error Alert */}
       {validationError && (
-        <Alert variant="error" title="Validation Alert">
+        <Alert variant="error" title={lang === "ur" ? "توثیق کی غلطی" : "Validation Alert"}>
           {validationError}
         </Alert>
       )}
 
-      {/* Phase 5 Calculation Engine Placeholder Alert */}
-      <Alert variant="info" title="Phase 4 UI Preview">
+      {/* Methodology Disclaimer Alert */}
+      <Alert variant="info" title={lang === "ur" ? "طریقۂ کار سے متعلق نوٹس" : "Methodology Notice"}>
         {t.placeholderNotice}
       </Alert>
 
       {/* Summary Card */}
       <Card variant="bordered">
         <CardHeader>
-          <CardTitle className="text-lg">📋 Summary of Entered Wealth</CardTitle>
+          <CardTitle className="text-lg">📋 {t.title}</CardTitle>
           <CardDescription>
-            Selected Nisab Standard:{" "}
+            {lang === "ur" ? "منتخب کردہ نصاب کا معیار: " : "Selected Nisab Standard: "}
             <span className="font-semibold text-slate-900 capitalize">
-              {state.nisabStandard} Nisab
+              {state.nisabStandard === "silver"
+                ? lang === "ur"
+                  ? "چاندی کا نصاب (612.36g)"
+                  : "Silver Nisab (612.36g)"
+                : lang === "ur"
+                ? "سونے کا نصاب (87.48g)"
+                : "Gold Nisab (87.48g)"}
             </span>
           </CardDescription>
         </CardHeader>
@@ -114,8 +121,8 @@ export default function ReviewPage() {
           {/* Assets Breakdown Table */}
           <div className="space-y-3">
             <div className="flex items-center justify-between font-semibold text-slate-900 text-sm border-b border-slate-200 pb-2">
-              <span>Asset Category</span>
-              <span>Value (PKR)</span>
+              <span>{lang === "ur" ? "اثاثوں کی قسم" : "Asset Category"}</span>
+              <span>{lang === "ur" ? "مالیت (PKR)" : "Value (PKR)"}</span>
             </div>
 
             {assetCategories.map((cat, idx) => (
@@ -150,7 +157,7 @@ export default function ReviewPage() {
           {/* Liabilities Section */}
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between font-semibold text-slate-900 text-sm border-b border-slate-200 pb-2">
-              <span>Deductible Liabilities</span>
+              <span>{allT.calculator.liabilities.totalLiabilitiesLabel}</span>
               <Link
                 href="/calculator/liabilities"
                 className="text-xs text-emerald-600 hover:text-emerald-700 underline font-medium"

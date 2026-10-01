@@ -23,10 +23,16 @@
     text-align: right;
   }
 
-  /* Focus visible accessibility outline defaults */
-  *:focus-visible {
-    outline: 2px solid #059669;
-    outline-offset: 2px;
+  /* Accessible button cursor defaults */
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role="button"][aria-disabled="true"],
+  [aria-disabled="true"] {
+    cursor: not-allowed;
   }
 }
 

@@ -5,22 +5,22 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Input } from "@/components/ui";
 import { useCalculator } from "@/context/CalculatorContext";
-import { translations, Language } from "@/lib/i18n/translations";
-import { validateNumericString, getValidationErrorMessage } from "@/lib/validation";
+import { useLanguage } from "@/context/LanguageContext";
+import { validateNumericString, getValidationErrorMessage, ValidationErrorKey } from "@/lib/validation";
 
 export default function CashSavingsFormPage() {
   const router = useRouter();
   const { state, updateCashSavings } = useCalculator();
+  const { lang, t: allT } = useLanguage();
 
-  const lang: Language = typeof document !== "undefined" && document.documentElement.lang === "ur" ? "ur" : "en";
-  const t = translations[lang].calculator.forms.cashSavings;
-  const commonT = translations[lang].calculator.forms;
+  const t = allT.calculator.forms.cashSavings;
+  const commonT = allT.calculator.forms;
 
   const [cashInHand, setCashInHand] = useState(state.cashSavings.cashInHand);
   const [bankSavings, setBankSavings] = useState(state.cashSavings.bankSavings);
   const [otherCash, setOtherCash] = useState(state.cashSavings.otherCash);
 
-  const [errors, setErrors] = useState<{ cashInHand?: string; bankSavings?: string; otherCash?: string }>({});
+  const [errorKeys, setErrorKeys] = useState<{ cashInHand?: ValidationErrorKey; bankSavings?: ValidationErrorKey; otherCash?: ValidationErrorKey }>({});
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,19 +29,19 @@ export default function CashSavingsFormPage() {
     const check2 = validateNumericString(bankSavings);
     const check3 = validateNumericString(otherCash);
 
-    const newErrors: { cashInHand?: string; bankSavings?: string; otherCash?: string } = {};
+    const newErrors: { cashInHand?: ValidationErrorKey; bankSavings?: ValidationErrorKey; otherCash?: ValidationErrorKey } = {};
 
-    if (!check1.isValid) {
-      newErrors.cashInHand = getValidationErrorMessage(check1.errorKey, lang);
+    if (!check1.isValid && check1.errorKey) {
+      newErrors.cashInHand = check1.errorKey;
     }
-    if (!check2.isValid) {
-      newErrors.bankSavings = getValidationErrorMessage(check2.errorKey, lang);
+    if (!check2.isValid && check2.errorKey) {
+      newErrors.bankSavings = check2.errorKey;
     }
-    if (!check3.isValid) {
-      newErrors.otherCash = getValidationErrorMessage(check3.errorKey, lang);
+    if (!check3.isValid && check3.errorKey) {
+      newErrors.otherCash = check3.errorKey;
     }
 
-    setErrors(newErrors);
+    setErrorKeys(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
       return;
@@ -62,9 +62,9 @@ export default function CashSavingsFormPage() {
 
       <Card variant="bordered">
         <CardHeader>
-          <CardTitle className="text-lg">💵 Cash & Savings</CardTitle>
+          <CardTitle className="text-lg">💵 {t.title}</CardTitle>
           <CardDescription>
-            Enter liquid balances owned for one lunar year.
+            {t.subtitle}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -76,10 +76,10 @@ export default function CashSavingsFormPage() {
               type="number"
               min="0"
               value={cashInHand}
-              error={errors.cashInHand}
+              error={errorKeys.cashInHand ? getValidationErrorMessage(errorKeys.cashInHand, lang) : undefined}
               onChange={(e) => {
                 setCashInHand(e.target.value);
-                if (errors.cashInHand) setErrors((prev) => ({ ...prev, cashInHand: undefined }));
+                if (errorKeys.cashInHand) setErrorKeys((prev) => ({ ...prev, cashInHand: undefined }));
               }}
             />
 
@@ -90,10 +90,10 @@ export default function CashSavingsFormPage() {
               type="number"
               min="0"
               value={bankSavings}
-              error={errors.bankSavings}
+              error={errorKeys.bankSavings ? getValidationErrorMessage(errorKeys.bankSavings, lang) : undefined}
               onChange={(e) => {
                 setBankSavings(e.target.value);
-                if (errors.bankSavings) setErrors((prev) => ({ ...prev, bankSavings: undefined }));
+                if (errorKeys.bankSavings) setErrorKeys((prev) => ({ ...prev, bankSavings: undefined }));
               }}
             />
 
@@ -104,10 +104,10 @@ export default function CashSavingsFormPage() {
               type="number"
               min="0"
               value={otherCash}
-              error={errors.otherCash}
+              error={errorKeys.otherCash ? getValidationErrorMessage(errorKeys.otherCash, lang) : undefined}
               onChange={(e) => {
                 setOtherCash(e.target.value);
-                if (errors.otherCash) setErrors((prev) => ({ ...prev, otherCash: undefined }));
+                if (errorKeys.otherCash) setErrorKeys((prev) => ({ ...prev, otherCash: undefined }));
               }}
             />
 
