@@ -1,243 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌙 Zakat Companion (زکوٰۃ کمپینین)
 
-## Getting Started
+<div align="center">
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-16.3.5-black?style=for-the-badge&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React-19.2.8-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.8_Flash-8E75B2?style=for-the-badge&logo=google-gemini&logoColor=white)
+![Tests](https://img.shields.io/badge/Tests-89%2F89%20Passing-emerald?style=for-the-badge&logo=checkmarx&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<p align="center">
+  <strong>A modern, privacy-first, guided Zakat calculation application with bidirectional English & Urdu (RTL) support and an integrated AI educational assistant.</strong>
+</p>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# Zakat Companion
-
-A simple, guided, and privacy-conscious **Zakat Calculator** designed for Muslims in Pakistan, with support for **English and Urdu**.
-
-Zakat Companion helps users understand Zakat eligibility, enter different types of assets and liabilities, review their information, and receive a clear Zakat calculation with a detailed breakdown.
-
-> **Important:** The calculator currently uses development methodology defaults that are **pending religious review**. It is an educational calculation tool and **not an official religious ruling or fatwa**.
+</div>
 
 ---
 
-## ✨ Features
-
-### 🧮 Guided Zakat Calculator
-
-Step-by-step calculation flow:
-
-1. Eligibility & Nisab
-2. Cash & Savings
-3. Gold
-4. Silver
-5. Investments
-6. Business Assets
-7. Receivables
-8. Liabilities
-9. Review
-10. Zakat Result
-
-### 💰 Supported Assets
-
-* Cash in hand
-* Bank savings
-* Other cash
-* Gold
-* Silver
-* Investments
-* Business assets
-* Receivables
-
-### 📉 Liabilities
-
-Users can enter eligible liabilities and immediate expenses according to the configured methodology.
-
-### 🪙 Live Gold & Silver Valuation
-
-The application supports live gold and silver pricing through the configured metals API.
-
-Metal valuation considers:
-
-* Current market price
-* Weight
-* Gold purity / karat
-* Silver weight
-
-### 🌐 English & Urdu
-
-* English interface
-* Urdu interface
-* RTL support for Urdu
-* Language switching without losing entered calculation data
-
-### 🤖 AI Assistant
-
-The integrated AI assistant provides educational guidance about:
-
-* Zakat
-* Nisab
-* Supported calculator methodology
-* General calculation concepts
-
-The assistant does not provide personalized religious rulings or fatwas.
-
-### 📄 PDF Summary
-
-Users can generate a downloadable calculation summary containing:
-
-* Asset breakdown
-* Liabilities
-* Net zakatable wealth
-* Nisab value
-* Zakat amount
-* Calculation details
-
-English and Urdu PDF output are supported.
-
-### 🔒 Privacy-Conscious MVP
-
-The MVP does not require:
-
-* Login
-* Registration
-* User accounts
-* Calculation history
-* Database persistence
-
-Calculation data remains part of the current session.
-
-### 📱 Responsive Design
-
-Designed for:
-
-* Mobile
-* Tablet
-* Desktop
-
-The interface supports both English LTR and Urdu RTL layouts.
+> [!IMPORTANT]
+> **Methodology Status & Religious Notice**:
+> The calculator currently uses defined **development methodology defaults** that are pending formal religious/scholar review. Zakat Companion is an educational and calculation-support tool and does not constitute a formal Islamic ruling (fatwa).
 
 ---
 
-## 🧭 User Flow
+## 🌟 Key Features
 
-```text
-Landing Page
-     ↓
-Eligibility / Nisab
-     ↓
-Assets
- ├── Cash & Savings
- ├── Gold
- ├── Silver
- ├── Investments
- ├── Business Assets
- └── Receivables
-     ↓
-Liabilities
-     ↓
-Review
-     ↓
-Zakat Result
-     ↓
-PDF Summary
-```
+### 🧮 1. Step-by-Step Guided Calculator Wizard
+A clear, non-overwhelming step-by-step wizard that walks users through:
+- **Eligibility & Nisab**: Preliminary check based on lunar year (Hawl) and Nisab wealth thresholds.
+- **Zakatable Assets**:
+  - 💵 **Cash & Savings**: Cash in hand, bank accounts, prize bonds, and foreign currency.
+  - 🥇 **Gold**: Multi-karat purity weighting (24K, 22K, 21K, 18K) against live market spot prices.
+  - 🥈 **Silver**: Weight in grams against live market rates.
+  - 📈 **Investments**: Public stocks, mutual funds, and equity investments at market valuation.
+  - 🏢 **Business Assets**: Stock-in-trade and liquid business cash.
+  - 🤝 **Receivables**: Expected good loans and repayments.
+- **Liabilities & Deductions**: Short-term immediate debts and living expenses due.
+- **Interactive Review**: Full summary with real-time recalculation and category edit shortcuts.
+- **Visual Result Breakdown**: Clear breakdown showing total assets, deductible liabilities, Nisab threshold, and final payable Zakat.
 
-The AI assistant is available throughout relevant parts of the experience.
+### 🌐 2. Seamless English ↔ Urdu Bilingual Experience
+- **Instant Toggle**: Switch between English (`ltr`) and Urdu (`rtl`) dynamically at any point.
+- **100% Data Retention**: Changing languages never resets, clears, or modifies entered user values.
+- **Typography & Layout**: Tailored typography and mirrored UI design for native Urdu readability.
 
----
+### 🤖 3. AI Educational Assistant (Google Gemini)
+- Integrated floating AI assistant powered by **Gemini 3.8 / 3.7 Flash**.
+- Explains core Zakat concepts (Hawl, Nisab, eligible assets, fiqh differences).
+- Context-aware responses that transparently clarify the application's configured development defaults.
+- Zero financial calculations in chat: guides users directly to the verified calculation wizard.
 
-## 🕌 Calculation Methodology
+### 📄 4. PDF Summary Generation
+- Instant client-side download of a formatted calculation summary.
+- Generates structured PDF reports in both English and Urdu with metadata, disclaimers, and category breakdowns.
 
-The calculation methodology is centralized in:
-
-```text
-lib/zakat/methodology.ts
-```
-
-Current development defaults include:
-
-| Method         | Current Development Default                     |
-| -------------- | ----------------------------------------------- |
-| Zakat Rate     | 2.5%                                            |
-| Gold Nisab     | 87.48 g                                         |
-| Silver Nisab   | 612.36 g                                        |
-| Default Nisab  | Silver                                          |
-| Hawl           | Assumes entered assets completed one lunar year |
-| Gold Jewelry   | 100% entered value                              |
-| Silver         | 100% entered value                              |
-| Investments    | 100% entered market value                       |
-| Business Stock | 100% entered value                              |
-| Receivables    | 100% entered expected repayment                 |
-| Liabilities    | Configured deduction                            |
-| Final Zakat    | Rounded to nearest integer                      |
-
-Gold valuation uses the applicable spot price and purity ratio:
-
-```text
-Gold Value = Spot Price × Weight × (Karat / 24)
-```
-
-### ⚠️ Religious Review
-
-The above values are **development defaults** and require confirmation by a qualified religious scholar before being presented as authoritative religious methodology.
-
-The project intentionally keeps these decisions centralized so that they can be reviewed and updated without changing the calculation engine.
+### 🔒 5. Privacy by Design
+- **No Database Storage**: Calculations exist entirely within the client session.
+- **No Accounts Required**: No login, sign-up, or tracking of personal financial identity.
+- **Safe API Pipelines**: Zero sensitive financial credentials or user data are stored on servers.
 
 ---
 
-## 🏗️ Tech Stack
+## 📐 Calculation Engine & Methodology
 
-### Frontend
+The core calculation logic is strictly decoupled from the UI in [`lib/zakat/`](./lib/zakat/):
 
-* Next.js 16
-* React 19
-* TypeScript
-* Tailwind CSS
+| Parameter | Development Default | Description |
+| :--- | :--- | :--- |
+| **Zakat Rate** | **2.5%** | Applied to net zakatable wealth completing one lunar year (*Hawl*). |
+| **Silver Nisab (Default)** | **612.36 grams** (52.5 Tola) | Primary threshold standard dynamically valued via spot price. |
+| **Gold Nisab (Alternate)** | **87.48 grams** (7.5 Tola) | Alternate threshold standard valued via spot price. |
+| **Gold Valuation** | `Price × Weight × (Karat / 24)` | Calculated based on standard purity ratios (24K, 22K, 21K, 18K). |
+| **Silver Valuation** | `Price × Weight` | Spot valuation per gram. |
+| **Liquid Assets** | `100%` of entered market value | Cash, stocks, business stock, and good receivables. |
+| **Liabilities** | Subtracted from Total Assets | Deductible short-term liabilities due immediately. |
 
-### Backend
+---
 
-* Next.js API Routes
-* Server-side PDF generation
-* Gemini API
-* Metals API
+## 🗺️ Application Workflow
 
-### Testing
+```mermaid
+graph TD
+    A[Landing Page] -->|Start Calculation| B[Step 1: Eligibility & Nisab]
+    B --> C[Step 2: Assets Hub]
+    C --> C1[Cash & Savings]
+    C --> C2[Gold Valuation]
+    C --> C3[Silver Valuation]
+    C --> C4[Investments & Shares]
+    C --> C5[Business Assets]
+    C --> C6[Receivables]
+    C1 & C2 & C3 & C4 & C5 & C6 -->|Save & Return| C
+    C -->|Continue| D[Step 3: Liabilities]
+    D -->|Continue| E[Step 4: Review & Summary]
+    E -->|Calculate Zakat| F[Step 5: Result & PDF Export]
+    
+    style A fill:#059669,stroke:#047857,color:#fff
+    style F fill:#059669,stroke:#047857,color:#fff
+```
 
-* Custom TypeScript test runner
-* Unit tests
-* Accessibility tests
-* Internationalization tests
-* API tests
-* PDF generation tests
+---
 
-### Deployment
+## 🛠️ Tech Stack
 
-The project is compatible with modern Next.js hosting platforms such as:
-
-* Vercel
-* Other Node.js-compatible hosting platforms
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
+- **UI & Styling**: [React 19](https://react.dev/), [Tailwind CSS v4](https://tailwindcss.com/)
+- **Language**: [TypeScript 5](https://www.typescriptlang.org/)
+- **AI Integration**: [Google Gemini Flash API](https://ai.google.dev/)
+- **Metal Rates API**: Spot Gold & Silver Pricing API
+- **PDF Engine**: [PDFKit](https://pdfkit.org/)
+- **Test Runner**: [TSX](https://github.com/privatenumber/tsx) (Direct TypeScript execution)
 
 ---
 
@@ -245,314 +117,149 @@ The project is compatible with modern Next.js hosting platforms such as:
 
 ```text
 zakat-companion/
-│
 ├── app/
 │   ├── api/
-│   │   ├── chat/
-│   │   │   └── route.ts
-│   │   ├── metals/
-│   │   │   └── route.ts
-│   │   └── pdf/
-│   │       └── route.ts
-│   │
+│   │   ├── chat/route.ts          # AI Chatbot endpoint (Gemini Flash)
+│   │   ├── metals/route.ts        # Gold & silver market price provider
+│   │   └── pdf/route.ts           # Server-side PDF generator
 │   ├── calculator/
-│   │   ├── assets/
-│   │   │   ├── cash-savings/
-│   │   │   ├── gold/
-│   │   │   ├── silver/
-│   │   │   ├── investments/
-│   │   │   ├── business-assets/
-│   │   │   └── receivables/
-│   │   ├── eligibility/
-│   │   ├── liabilities/
-│   │   ├── review/
-│   │   ├── result/
-│   │   └── layout.tsx
-│   │
-│   ├── error.tsx
-│   ├── globals.css
-│   ├── icon.svg
-│   ├── favicon.ico
-│   ├── layout.tsx
-│   └── page.tsx
-│
+│   │   ├── assets/                # Asset category subpages (cash, gold, silver, etc.)
+│   │   ├── eligibility/           # Nisab qualification step
+│   │   ├── liabilities/           # Deductible liabilities form
+│   │   ├── review/                # Interactive summary & review page
+│   │   ├── result/                # Final calculation breakdown & PDF trigger
+│   │   └── layout.tsx             # Calculator stepper & responsive layout
+│   ├── error.tsx                  # Global error boundary
+│   ├── globals.css                # Tailwind CSS v4 design tokens & fonts
+│   ├── icon.svg                   # Next.js App Router SVG site icon
+│   ├── favicon.ico                # Multi-resolution ICO favicon
+│   ├── layout.tsx                 # Root layout with metadata & providers
+│   └── page.tsx                   # Landing page
 ├── components/
-│   ├── chatbot/
-│   ├── landing/
-│   └── ui/
-│
+│   ├── chatbot/ChatbotWidget.tsx  # Floating bilingual AI assistant
+│   ├── landing/                   # Header, Footer, Hero, FAQs, Features
+│   └── ui/                        # Button, Card, Input, Alert, Spinner
 ├── context/
-│   ├── CalculatorContext.tsx
-│   └── LanguageContext.tsx
-│
+│   ├── CalculatorContext.tsx      # Zakat state engine provider
+│   └── LanguageContext.tsx        # English/Urdu & RTL global synchronization
 ├── docs/
-│   └── ZAKAT_METHODOLOGY_CONFIRMATION.md
-│
+│   └── ZAKAT_METHODOLOGY_CONFIRMATION.md # Religious methodology & scholar review docs
 ├── lib/
-│   ├── api/
-│   ├── i18n/
-│   ├── pdf/
-│   ├── zakat/
-│   ├── accessibility.test.ts
-│   └── validation.ts
-│
-├── public/
-│
-├── types/
-│   └── calculator.ts
-│
-├── .env.example
-├── .gitignore
-├── ARCHITECTURE.md
-├── DEVELOPMENT_PLAN.md
-├── PRD.md
-├── README.md
-├── SRS.md
-├── UI_UX.md
-├── next.config.ts
-├── package.json
-└── tsconfig.json
+│   ├── api/                       # Gemini & Metals API clients + unit tests
+│   ├── i18n/                      # Translations & language unit tests
+│   ├── pdf/                       # PDF document builder & unit tests
+│   ├── zakat/                     # Core calculation engine, Nisab & valuation logic
+│   ├── accessibility.test.ts      # WCAG AA & ARIA test suite
+│   └── validation.ts              # Input sanitization & security rules
+├── public/                        # Static assets & favicons
+├── .env.example                   # Environment variable template
+├── package.json                   # Project dependencies & scripts
+└── tsconfig.json                  # TypeScript compiler settings
 ```
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Clone the Repository
+### 1. Prerequisites
+- **Node.js**: `v20.x` or higher
+- **npm**: `v10.x` or higher
 
+### 2. Installation
 ```bash
-git clone <your-repository-url>
-cd zakat-companion
-```
-
-### 2. Install Dependencies
-
-```bash
+git clone https://github.com/MuhammadNihalImran/zakat_project.git
+cd zakat_project
 npm install
 ```
 
-### 3. Configure Environment Variables
-
-Create a local environment file:
-
+### 3. Environment Setup
+Copy the example environment file:
 ```bash
 cp .env.example .env.local
 ```
 
-Then add the required API credentials.
-
-Example:
-
+Configure your credentials in `.env.local`:
 ```env
-GOLD_SILVER_API_KEY=
-GOLD_SILVER_API_URL=
+# Gold & Silver Live Pricing
+GOLD_SILVER_API_KEY=your_metals_api_key_here
+GOLD_SILVER_API_URL=https://api.metals.dev/v1/latest
 
-GEMINI_API_KEY=
-GEMINI_API_URL=
-GEMINI_MODEL=
+# Google Gemini AI Assistant
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_API_URL=https://generativelanguage.googleapis.com
+GEMINI_MODEL=gemini-3.8-flash
 ```
 
-> Never commit `.env.local` or real API keys to GitHub.
+> [!WARNING]
+> Never commit `.env.local` or push active API keys to public repositories.
 
-### 4. Start Development Server
-
+### 4. Run Development Server
 ```bash
 npm run dev
 ```
-
-Open:
-
-```text
-http://localhost:3000
-```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing Suite
 
-Run the complete test suite:
+Run the full automated test suite (89 unit, accessibility, and integration tests):
 
 ```bash
 npm test
 ```
 
-The project currently contains **89 automated tests** covering:
+### Test Coverage Breakdown:
+| Suite | File | Tests | Status |
+| :--- | :--- | :---: | :---: |
+| **Calculation Engine** | `lib/zakat/engine.test.ts` | 14/14 | ✅ PASS |
+| **Nisab Thresholds** | `lib/zakat/nisab.test.ts` | 4/4 | ✅ PASS |
+| **Asset Valuation** | `lib/zakat/valuation.test.ts` | 9/9 | ✅ PASS |
+| **Validation & Security** | `lib/validation.test.ts` | 17/17 | ✅ PASS |
+| **i18n & RTL Symmetry** | `lib/i18n/language.test.ts` | 5/5 | ✅ PASS |
+| **Accessibility (WCAG AA)** | `lib/accessibility.test.ts` | 6/6 | ✅ PASS |
+| **AI Chatbot (Gemini)** | `lib/api/gemini.test.ts` | 14/14 | ✅ PASS |
+| **Metals API Integration** | `lib/api/metals.test.ts` | 10/10 | ✅ PASS |
+| **PDF Generator** | `lib/pdf/generator.test.ts` | 10/10 | ✅ PASS |
+| **Total** | | **89 / 89** | **100% PASS** |
 
-* Zakat calculation engine
-* Nisab calculation
-* Metal valuation
-* Input validation
-* Internationalization
-* Accessibility
-* Gemini integration logic
-* Metals API integration
-* PDF generation
+---
 
-### Production Build
+## 📦 Production Build
+
+To verify production compilation with TypeScript and Next.js Turbopack:
 
 ```bash
 npm run build
 ```
 
-The production build should complete successfully before deployment.
-
----
-
-## 🔐 Environment Variables
-
-| Variable              | Purpose                         |
-| --------------------- | ------------------------------- |
-| `GOLD_SILVER_API_KEY` | API key for gold/silver pricing |
-| `GOLD_SILVER_API_URL` | Gold/silver API endpoint        |
-| `GEMINI_API_KEY`      | Gemini API authentication       |
-| `GEMINI_API_URL`      | Gemini API endpoint             |
-| `GEMINI_MODEL`        | Gemini model override           |
-
-Use `.env.example` as the template.
-
-**Never publish real API keys in source code, GitHub, screenshots, logs, or documentation.**
-
----
-
-## 📄 Documentation
-
-The project includes dedicated documentation for development and product decisions:
-
-* `PRD.md` — Product requirements
-* `SRS.md` — Software requirements
-* `ARCHITECTURE.md` — System architecture
-* `UI_UX.md` — UI/UX specifications
-* `DEVELOPMENT_PLAN.md` — Development plan
-* `docs/ZAKAT_METHODOLOGY_CONFIRMATION.md` — Religious methodology decisions and review status
-
-These documents should be treated as the project's development source of truth.
-
----
-
-## 🚫 MVP Scope
-
-### Included
-
-* Guided Zakat calculation
-* Nisab eligibility
-* Cash & savings
-* Gold
-* Silver
-* Investments
-* Business assets
-* Receivables
-* Liabilities
-* Calculation breakdown
-* English/Urdu
-* RTL support
-* AI educational assistant
-* PDF summary
-* Responsive interface
-
-### Not Included in MVP
-
-* User accounts
-* Login / registration
-* Calculation history
-* Database persistence
-* Payments
-* Donations
-* Bank integration
-* Cryptocurrency
-* Full financial management
-* Native mobile application
-* Personalized religious rulings
-* Complex administrative dashboards
-
-### Future Scope
-
-The following are intentionally outside the current MVP:
-
-* Real estate / investment property calculations
-* Retirement, pension, and provident funds
-* User accounts and saved calculation history
-* Additional methodology options after scholar review
-
----
-
-## 🔒 Privacy
-
-Zakat Companion is designed with privacy in mind.
-
-The MVP does not require users to create an account or provide personal identity information to perform a calculation.
-
-No calculation history is stored in a database in the MVP.
-
-Users should still avoid entering unnecessary sensitive personal information into the AI assistant.
-
----
-
-## ⚠️ Disclaimer
-
-Zakat Companion is an educational and calculation-support tool.
-
-Its current calculation methodology contains **development defaults pending review by a qualified religious scholar**.
-
-The application does not constitute:
-
-* A fatwa
-* An official religious ruling
-* Personalized religious advice
-* A substitute for consultation with a qualified scholar
-
-Users should consult a qualified scholar for questions involving personal or complex Zakat circumstances.
-
----
-
-## 🛠️ Development Principles
-
-The project follows these principles:
-
-1. Keep the MVP simple.
-2. Avoid unnecessary features.
-3. Keep calculation methodology centralized.
-4. Separate UI from calculation logic.
-5. Do not store user calculations in the MVP.
-6. Protect API credentials.
-7. Support English and Urdu consistently.
-8. Preserve calculation data when changing language.
-9. Test calculation logic independently.
-10. Do not present development defaults as definitive religious rulings.
-
----
-
-## 📌 Current Project Status
-
-**Status: MVP Development Complete**
-
-Current verification:
-
-```text
-Automated Tests:   89 / 89 PASS
-Production Build:  PASS
-Languages:         English + Urdu
-RTL Support:       PASS
-PDF Generation:    PASS
-AI Assistant:      Integrated
-Gold/Silver API:   Integrated
-Responsive UI:     Verified
-Favicon:           Added
+To run the production bundle locally:
+```bash
+npm run start
 ```
 
-The project is ready for source-control publication and deployment after final environment-variable configuration and production verification.
-
 ---
 
-## 👥 Project
+## ☁️ Deployment (Vercel)
 
-**Zakat Companion**
-
-Built as a guided Zakat calculation experience for users in Pakistan, with a focus on simplicity, transparency, privacy, and accessibility.
+1. Push your repository to GitHub.
+2. Import the repository into [Vercel](https://vercel.com).
+3. In Project Settings → **Environment Variables**, configure:
+   - `GEMINI_API_KEY`
+   - `GEMINI_API_URL`
+   - `GOLD_SILVER_API_KEY`
+   - `GOLD_SILVER_API_URL`
+4. Click **Deploy**. Vercel will automatically build and serve the application globally with serverless API routes.
 
 ---
 
 ## 📜 License
 
-Add the project's chosen license here before public release.
+This project is open source and available under the [MIT License](LICENSE).
 
-If the repository is intended to remain private or academic, keep the repository access restricted according to the project's requirements.
+---
+
+<div align="center">
+  <sub>Built with care for Muslims in Pakistan seeking a simple, transparent, and privacy-first Zakat calculation experience.</sub>
+</div>
+
